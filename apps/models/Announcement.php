@@ -9,7 +9,7 @@ class Announcement {
         $this->conn = $database->getConnection();
     }
 
-    // Tampil Data dengan Paginasi, Pencarian, dan Filter Hak Akses Instansi
+ // Tampil Data dengan Paginasi, Pencarian, dan Filter Hak Akses Instansi
     public function getPaginatedData($keyword = '', $limit = 10, $offset = 0, $id_instansi_admin = null) {
         $query = "SELECT a.*, u.nama_lengkap, c.nama_kategori, i.nama_instansi, f.nama_fakultas 
                   FROM announcements a
@@ -18,6 +18,8 @@ class Announcement {
                   LEFT JOIN instansi i ON a.id_instansi = i.id_instansi
                   LEFT JOIN fakultas f ON i.id_fakultas = f.id_fakultas
                   WHERE (a.title LIKE :keyword 
+                      OR a.deskripsi LIKE :keyword 
+                      OR c.nama_kategori LIKE :keyword 
                       OR i.nama_instansi LIKE :keyword 
                       OR f.nama_fakultas LIKE :keyword)";
         
@@ -47,9 +49,12 @@ class Announcement {
     public function getTotalRows($keyword = '', $id_instansi_admin = null) {
         $query = "SELECT COUNT(*) as total 
                   FROM announcements a
+                  LEFT JOIN categories c ON a.id_category = c.id_category
                   LEFT JOIN instansi i ON a.id_instansi = i.id_instansi
                   LEFT JOIN fakultas f ON i.id_fakultas = f.id_fakultas
                   WHERE (a.title LIKE :keyword 
+                      OR a.deskripsi LIKE :keyword 
+                      OR c.nama_kategori LIKE :keyword 
                       OR i.nama_instansi LIKE :keyword 
                       OR f.nama_fakultas LIKE :keyword)";
                      
